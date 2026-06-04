@@ -2,10 +2,10 @@ New-Item -Path "README.md" -ItemType "File" -Value @"
 # 🧾 CashflowGateway - Enterprise Offline-First POS Backend Engine
 
 <p align="left">
-  <img src="https://shields.io" alt=".NET 10" />
-  <img src="https://shields.io" alt="MySQL" />
-  <img src="https://shields.io" alt="Clean Architecture" />
-  <img src="https://shields.io" alt="Development Status" />
+<img src="https://img.shields.io/badge/EF%20Core-9.0-512BD4?style=flat&logo=dotnet&logoColor=white" alt="EF Core" />
+<img src="https://img.shields.io/badge/JWT-Auth-000000?style=flat&logo=jsonwebtokens&logoColor=white" alt="JWT" />
+<img src="https://img.shields.io/badge/Offline-PWA%20Ready-4479A1?style=flat&logo=pwa&logoColor=white" alt="PWA" />
+<img src="https://img.shields.io/badge/License-MIT-green?style=flat" alt="MIT License" />
 </p>
 
 ---
