@@ -4,7 +4,7 @@ using CashflowGateway.Domain;
 
 namespace CashflowGateway.Infrastructure.Data;
 
-public class AppDbContext : DbContext
+public class AppDbContext : DbContext, IAppDbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -20,7 +20,6 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // Explicitly bind models to your exact lowercase singular/plural MySQL tables
         modelBuilder.Entity<User>().ToTable("users");
         modelBuilder.Entity<Store>().ToTable("stores");
         modelBuilder.Entity<Device>().ToTable("devices");
@@ -29,7 +28,6 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<InventoryMovement>().ToTable("inventory_movements");
         modelBuilder.Entity<SyncQueue>().ToTable("sync_queue");
 
-        // Map the custom 'creted_at' database typo column name safely
         modelBuilder.Entity<Store>()
             .Property(s => s.CretedAt)
             .HasColumnName("creted_at");

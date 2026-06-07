@@ -3,24 +3,25 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using CashflowGateway.Domain;
-// BUSINESS LOGIC SERVICE - This is where you implement the core processing of the sync payload data packets received from the API controller. You can perform database operations, data transformations, and any necessary business rules here before saving to the database.
+using CashflowGateway.Infrastructure.Data;
 
 namespace CashflowGateway.Application;
 
 public class SyncService : ISyncService
 {
-    private readonly DbContext _context;
+    private readonly IAppDbContext _context;  
 
-   
-    public SyncService(DbContext context)
+    public SyncService(IAppDbContext context)
     {
         _context = context;
     }
 
     public async Task<bool> ProcessSyncPayloadAsync(SyncPayloadDto payload)
     {
-        
-        var device = await _context.Set<Device>().FirstOrDefaultAsync(d => d.Id == payload.DeviceId);
+       
+        var device = await _context.Devices
+            .FirstOrDefaultAsync(d => d.Id == payload.DeviceId);
+
         if (device != null)
         {
             device.LastSeen = DateTime.UtcNow;
@@ -30,34 +31,35 @@ public class SyncService : ISyncService
        
         foreach (var txDto in payload.OfflineTransactions)
         {
-            var exists = await _context.Set<Transaction>().AnyAsync(t => t.Id == txDto.Id);
-            if (exists)
-            {
-                continue; 
-            }
+        
+            var exists = await _context.Transactions
+                .AnyAsync(t => t.Id == txDto.Id);
+
+            if (exists) continue;
 
             var transaction = new Transaction
             {
-                Id = txDto.Id,
-                StoreId = txDto.StoreId,
-                DeviceId = payload.DeviceId,
+                Id        = txDto.Id,
+                StoreId   = txDto.StoreId,
+                DeviceId  = payload.DeviceId,
                 TotalAmount = txDto.TotalAmount,
                 CreatedAt = txDto.CreatedAt,
-                Status = "COMPLETED"
+                Status    = "COMPLETED"
             };
-            _context.Set<Transaction>().Add(transaction);
+            _context.Transactions.Add(transaction);
 
+            // Save each line item inside the transaction
             foreach (var itemDto in txDto.Items)
             {
                 var item = new TransactionItem
                 {
-                    Id = Guid.NewGuid(),
+                    Id            = Guid.NewGuid(),
                     TransactionId = transaction.Id,
-                    ProductId = itemDto.ProductId,
-                    Quantity = itemDto.Quantity,
-                    UnitPrice = itemDto.UnitPrice
+                    ProductId     = itemDto.ProductId,
+                    Quantity      = itemDto.Quantity,
+                    UnitPrice     = itemDto.UnitPrice
                 };
-                _context.Set<TransactionItem>().Add(item);
+                _context.TransactionItems.Add(item);
             }
         }
 
@@ -65,4 +67,3 @@ public class SyncService : ISyncService
         return true;
     }
 }
-

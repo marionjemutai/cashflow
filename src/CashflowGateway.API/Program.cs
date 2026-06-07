@@ -1,30 +1,31 @@
-
-using Microsoft.EntityFrameworkCore;
-using CashflowGateway.Infrastructure;
 using CashflowGateway.Application;
+using CashflowGateway.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-var serverVersion = ServerVersion.AutoDetect(connectionString);
-
-
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, serverVersion));
-
-
-builder.Services.AddScoped<DbContext>(provider => provider.GetRequiredService<AppDbContext>());
-
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        ServerVersion.AutoDetect(
+            builder.Configuration.GetConnectionString("DefaultConnection"))
+    ));
 
 builder.Services.AddScoped<ISyncService, SyncService>();
 
-
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
 
 var app = builder.Build();
 
+app.UseSwagger();
+app.UseSwaggerUI();
+
+app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
-app.Run();
 
+app.Run();
