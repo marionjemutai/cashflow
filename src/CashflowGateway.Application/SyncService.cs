@@ -1,5 +1,6 @@
-
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -16,16 +17,16 @@ public class SyncService : ISyncService
         _context = context;
     }
 
+
     public async Task<bool> ProcessSyncPayloadAsync(SyncPayloadDto payload)
     {
-
         var queueEntry = new SyncQueue
         {
-            Id       = Guid.NewGuid(),
-            DeviceId = payload.DeviceId,
-            Payload  = JsonSerializer.Serialize(payload),
-            Type     = "TRANSACTION_PUSH",
-            Status   = "PROCESSING",
+            Id        = Guid.NewGuid(),
+            DeviceId  = payload.DeviceId,
+            Payload   = JsonSerializer.Serialize(payload),
+            Type      = "TRANSACTION_PUSH",
+            Status    = "PROCESSING",
             CreatedAt = DateTime.UtcNow
         };
         _context.SyncQueues.Add(queueEntry);
@@ -33,6 +34,7 @@ public class SyncService : ISyncService
 
         try
         {
+
             var device = await _context.Devices
                 .FirstOrDefaultAsync(d => d.Id == payload.DeviceId);
 
@@ -41,9 +43,11 @@ public class SyncService : ISyncService
                 device.LastSeen = DateTime.UtcNow;
                 device.Status   = "ONLINE";
             }
-            
+
+          
             foreach (var txDto in payload.OfflineTransactions)
             {
+             
                 var exists = await _context.Transactions
                     .AnyAsync(t => t.Id == txDto.Id);
 
@@ -73,6 +77,8 @@ public class SyncService : ISyncService
                     _context.TransactionItems.Add(item);
                 }
             }
+
+           
             queueEntry.Status   = "COMPLETED";
             queueEntry.SyncedAt = DateTime.UtcNow;
 
@@ -86,5 +92,35 @@ public class SyncService : ISyncService
             await _context.SaveChangesAsync();
             return false;
         }
+    }
+
+
+    public async Task<SyncPullResponseDto> GetPullDataAsync(Guid deviceId, DateTime since)
+    {
+        var device = await _context.Devices
+            .FirstOrDefaultAsync(d => d.Id == deviceId);
+
+    
+        if (device == null)
+            return new SyncPullResponseDto { ServerTime = DateTime.UtcNow };
+
+        
+        var updatedProducts = await _context.Products
+            .Where(p => p.StoreId == device.StoreId && p.IsActive == true)
+            .Select(p => new ProductSyncDto
+            {
+                Id        = p.Id,
+                Name      = p.Name,
+                Price     = p.Price,
+                Stock     = p.StockQuantity,
+                CreatedAt = p.CreatedAt
+            })
+            .ToListAsync();
+
+        return new SyncPullResponseDto
+        {
+            ServerTime      = DateTime.UtcNow,
+            UpdatedProducts = updatedProducts
+        };
     }
 }
