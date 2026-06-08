@@ -15,6 +15,8 @@ public class AppDbContext : DbContext, IAppDbContext
     public DbSet<TransactionItem> TransactionItems { get; set; }
     public DbSet<InventoryMovement> InventoryMovements { get; set; }
     public DbSet<SyncQueue> SyncQueues { get; set; }
+    public DbSet<Product> Products { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -27,6 +29,7 @@ public class AppDbContext : DbContext, IAppDbContext
         modelBuilder.Entity<TransactionItem>().ToTable("transaction_items");
         modelBuilder.Entity<InventoryMovement>().ToTable("inventory_movements");
         modelBuilder.Entity<SyncQueue>().ToTable("sync_queue");
+        modelBuilder.Entity<Product>().ToTable("products");
 
         modelBuilder.Entity<Store>()
             .Property(s => s.CretedAt)
