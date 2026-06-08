@@ -11,6 +11,7 @@ namespace CashflowGateway.API.Controllers;
 public class SyncController : ControllerBase
 {
     private readonly ISyncService _syncService;
+    
 
     public SyncController(ISyncService syncService)
     {
@@ -19,6 +20,7 @@ public class SyncController : ControllerBase
 
 
     [HttpPost("payload")]
+    [Authorize(Roles = "CASHIER,MANAGER,ADMIN")]
     public async Task<IActionResult> SyncPayload([FromBody] SyncPayloadDto payload)
     {
         if (payload == null)
@@ -33,6 +35,7 @@ public class SyncController : ControllerBase
     }
 
     [HttpGet("pull")]
+    [Authorize(Roles = "CASHIER,MANAGER,ADMIN")]
     public async Task<IActionResult> PullData(
         [FromQuery] Guid deviceId,
         [FromQuery] DateTime since)
@@ -42,5 +45,17 @@ public class SyncController : ControllerBase
 
         var result = await _syncService.GetPullDataAsync(deviceId, since);
         return Ok(result);
+    }
+  
+    private Guid GetCurrentUserId()
+    {
+        var sub = User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier);
+        return Guid.TryParse(sub, out var id) ? id : Guid.Empty;
+    }
+
+  
+    private string GetCurrentUserRole()
+    {
+        return User.FindFirstValue(System.Security.Claims.ClaimTypes.Role) ?? string.Empty;
     }
 }
