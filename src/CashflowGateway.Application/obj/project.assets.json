@@ -1,11 +1,30 @@
 {
   "version": 4,
   "targets": {
-    "net10.0": {}
+    "net10.0": {
+      "CashflowGateway.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "compile": {
+          "bin/placeholder/CashflowGateway.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/CashflowGateway.Domain.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "CashflowGateway.Domain/1.0.0": {
+      "type": "project",
+      "path": "../CashflowGateway.Domain/CashflowGateway.Domain.csproj",
+      "msbuildProject": "../CashflowGateway.Domain/CashflowGateway.Domain.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net10.0": []
+    "net10.0": [
+      "CashflowGateway.Domain >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\ui\\.nuget\\packages\\": {}
@@ -32,7 +51,11 @@
         "net10.0": {
           "framework": "net10.0",
           "targetAlias": "net10.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\ui\\CashflowGateway\\src\\CashflowGateway.Domain\\CashflowGateway.Domain.csproj": {
+              "projectPath": "C:\\Users\\ui\\CashflowGateway\\src\\CashflowGateway.Domain\\CashflowGateway.Domain.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

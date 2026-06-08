@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "5BuvYib0Dbk=",
+  "dgSpecHash": "4vyBclf6p8Y=",
   "success": true,
   "projectFilePath": "C:\\Users\\ui\\CashflowGateway\\src\\CashflowGateway.API\\CashflowGateway.API.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\ui\\.nuget\\packages\\bcrypt.net-next\\4.2.0\\bcrypt.net-next.4.2.0.nupkg.sha512",
     "C:\\Users\\ui\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\ui\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\10.0.8\\microsoft.aspnetcore.authentication.jwtbearer.10.0.8.nupkg.sha512",
     "C:\\Users\\ui\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.8\\microsoft.aspnetcore.openapi.10.0.8.nupkg.sha512",

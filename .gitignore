@@ -1,2 +1,9 @@
 
 src/CashflowGateway.API/appsettings.json
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.cache
+*.log

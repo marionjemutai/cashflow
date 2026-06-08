@@ -7,6 +7,7 @@ namespace CashflowGateway.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]  
 public class SyncController : ControllerBase
 {
     private readonly ISyncService _syncService;
