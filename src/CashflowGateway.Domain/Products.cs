@@ -10,5 +10,6 @@ public class Product
     public decimal Price         { get; set; }
     public int     StockQuantity { get; set; } = 0;
     public bool    IsActive      { get; set; } = true;
-    public DateTime? CreatedAt   { get; set; } = DateTime.UtcNow;
+    [Column("created_at")]
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

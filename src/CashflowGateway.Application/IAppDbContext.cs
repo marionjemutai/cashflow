@@ -12,6 +12,6 @@ public interface IAppDbContext
     DbSet<TransactionItem> TransactionItems { get; }
     DbSet<InventoryMovement> InventoryMovements { get; }
     DbSet<SyncQueue> SyncQueues { get; }
-
+    DbSet<Product> Products { get; }        
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

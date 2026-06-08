@@ -11,10 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
-        ServerVersion.AutoDetect(
-            builder.Configuration.GetConnectionString("DefaultConnection"))));
-
-
+        new MySqlServerVersion(new Version(8, 0, 46))
+    ));
 builder.Services.AddScoped<IAppDbContext>(
     provider => provider.GetRequiredService<AppDbContext>());
 
@@ -24,6 +22,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 
 
 var jwtKey = builder.Configuration["Jwt:Key"]!;
+
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -45,6 +44,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 
 var app = builder.Build();
 

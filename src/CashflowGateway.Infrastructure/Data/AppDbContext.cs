@@ -1,6 +1,7 @@
 
-using Microsoft.EntityFrameworkCore;
 using CashflowGateway.Domain;
+using CashflowGateway.Application;
+using Microsoft.EntityFrameworkCore;  
 
 namespace CashflowGateway.Infrastructure.Data;
 
@@ -16,7 +17,6 @@ public class AppDbContext : DbContext, IAppDbContext
     public DbSet<InventoryMovement> InventoryMovements { get; set; }
     public DbSet<SyncQueue> SyncQueues { get; set; }
     public DbSet<Product> Products { get; set; }
-
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -36,4 +36,3 @@ public class AppDbContext : DbContext, IAppDbContext
             .HasColumnName("creted_at");
     }
 }
-

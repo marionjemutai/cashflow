@@ -10,5 +10,7 @@ public class User
     public string? Email { get; set; }
     public string? PasswordHash { get; set; }
     public string Role { get; set; } = "CASHIER"; 
-    public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+    [Column("created_at")]
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+  
 }
