@@ -41,6 +41,7 @@ public class SyncService : ISyncService
                 device.LastSeen = DateTime.UtcNow;
                 device.Status   = "ONLINE";
             }
+            
             foreach (var txDto in payload.OfflineTransactions)
             {
                 var exists = await _context.Transactions
