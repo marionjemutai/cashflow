@@ -1,5 +1,5 @@
 using System;
-
+using System.ComponentModel.DataAnnotations.Schema;
 namespace CashflowGateway.Domain;
 
 public class Product
