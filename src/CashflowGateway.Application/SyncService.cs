@@ -17,7 +17,6 @@ public class SyncService : ISyncService
         _context = context;
     }
 
-
     public async Task<bool> ProcessSyncPayloadAsync(SyncPayloadDto payload)
     {
         var queueEntry = new SyncQueue
@@ -25,7 +24,7 @@ public class SyncService : ISyncService
             Id        = Guid.NewGuid(),
             DeviceId  = payload.DeviceId,
             Payload   = JsonSerializer.Serialize(payload),
-            Type = "SALE",
+            Type      = "SALE",
             Status    = "PENDING",
             CreatedAt = DateTime.UtcNow
         };
@@ -34,7 +33,6 @@ public class SyncService : ISyncService
 
         try
         {
-
             var device = await _context.Devices
                 .FirstOrDefaultAsync(d => d.Id == payload.DeviceId);
 
@@ -44,10 +42,8 @@ public class SyncService : ISyncService
                 device.Status   = "ONLINE";
             }
 
-          
             foreach (var txDto in payload.OfflineTransactions)
             {
-             
                 var exists = await _context.Transactions
                     .AnyAsync(t => t.Id == txDto.Id);
 
@@ -64,6 +60,9 @@ public class SyncService : ISyncService
                 };
                 _context.Transactions.Add(transaction);
 
+               
+                await _context.SaveChangesAsync();
+
                 foreach (var itemDto in txDto.Items)
                 {
                     var item = new TransactionItem
@@ -76,10 +75,12 @@ public class SyncService : ISyncService
                     };
                     _context.TransactionItems.Add(item);
                 }
+
+                
+                await _context.SaveChangesAsync();
             }
 
-           
-            queueEntry.Status = "SYNCED";
+            queueEntry.Status   = "SYNCED";
             queueEntry.SyncedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
@@ -94,17 +95,14 @@ public class SyncService : ISyncService
         }
     }
 
-
     public async Task<SyncPullResponseDto> GetPullDataAsync(Guid deviceId, DateTime since)
     {
         var device = await _context.Devices
             .FirstOrDefaultAsync(d => d.Id == deviceId);
 
-    
         if (device == null)
             return new SyncPullResponseDto { ServerTime = DateTime.UtcNow };
 
-        
         var updatedProducts = await _context.Products
             .Where(p => p.StoreId == device.StoreId && p.IsActive == true)
             .Select(p => new ProductSyncDto
