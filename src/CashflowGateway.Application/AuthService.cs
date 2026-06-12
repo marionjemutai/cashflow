@@ -23,17 +23,17 @@ public class AuthService : IAuthService
 
     public async Task<AuthResponseDto?> RegisterAsync(RegisterRequestDto request)
     {
-        // 1. Check if email already exists
+     
         var existing = await _context.Users
             .FirstOrDefaultAsync(u => u.Email == request.Email);
 
         if (existing != null)
-            return null; // email taken — controller will return 409 Conflict
+            return null; 
 
-        // 2. Hash the password — never store plain text
+      
         var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
-        // 3. Save the new user
+    
         var user = new User
         {
             Id           = Guid.NewGuid(),
@@ -47,33 +47,28 @@ public class AuthService : IAuthService
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-        // 4. Issue a token immediately so the user is logged in after registering
         return GenerateAuthResponse(user);
     }
 
     public async Task<AuthResponseDto?> LoginAsync(LoginRequestDto request)
     {
-        // 1. Find user by email
+       
         var user = await _context.Users
             .FirstOrDefaultAsync(u => u.Email == request.Email);
 
         if (user == null)
-            return null; // user not found
+            return null; 
 
-        // 2. Verify password against stored hash
+      
         var passwordValid = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
 
         if (!passwordValid)
-            return null; // wrong password
+            return null; 
 
-        // 3. Issue JWT token
+       
         return GenerateAuthResponse(user);
     }
 
-    // ─────────────────────────────────────────────────────────────────
-    // Builds the JWT token and wraps it in the response DTO
-    // This is private — only called internally by Register and Login
-    // ─────────────────────────────────────────────────────────────────
     private AuthResponseDto GenerateAuthResponse(User user)
     {
         var key        = new SymmetricSecurityKey(
@@ -82,8 +77,7 @@ public class AuthService : IAuthService
         var expiryHours = int.Parse(_config["Jwt:ExpiryHours"] ?? "8");
         var expiry     = DateTime.UtcNow.AddHours(expiryHours);
 
-        // Claims are pieces of identity baked into the token
-        // The device can read these without calling the server
+
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub,   user.Id.ToString()),

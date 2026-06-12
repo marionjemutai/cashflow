@@ -62,4 +62,5 @@ public class SyncController : ControllerBase
     {
         return User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
     }
+    
 }

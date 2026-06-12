@@ -25,8 +25,8 @@ public class SyncService : ISyncService
             Id        = Guid.NewGuid(),
             DeviceId  = payload.DeviceId,
             Payload   = JsonSerializer.Serialize(payload),
-            Type      = "TRANSACTION_PUSH",
-            Status    = "PROCESSING",
+            Type = "SALE",
+            Status    = "PENDING",
             CreatedAt = DateTime.UtcNow
         };
         _context.SyncQueues.Add(queueEntry);
@@ -79,7 +79,7 @@ public class SyncService : ISyncService
             }
 
            
-            queueEntry.Status   = "COMPLETED";
+            queueEntry.Status = "SYNCED";
             queueEntry.SyncedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
