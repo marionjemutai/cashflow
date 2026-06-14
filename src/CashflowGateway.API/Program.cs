@@ -44,7 +44,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddScoped<ILedgerService, LedgerService>();
 
 var app = builder.Build();
 
