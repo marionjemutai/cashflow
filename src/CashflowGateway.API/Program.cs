@@ -19,6 +19,8 @@ builder.Services.AddScoped<IAppDbContext>(
 
 builder.Services.AddScoped<ISyncService, SyncService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IInventoryService, InventoryService>();
+builder.Services.AddScoped<ILedgerService, LedgerService>();
 
 
 var jwtKey = builder.Configuration["Jwt:Key"]!;
@@ -44,7 +46,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<ILedgerService, LedgerService>();
+
 
 var app = builder.Build();
 
