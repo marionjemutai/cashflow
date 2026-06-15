@@ -59,8 +59,6 @@ public class SyncService : ISyncService
                     Status      = "COMPLETED"
                 };
                 _context.Transactions.Add(transaction);
-
-               
                 await _context.SaveChangesAsync();
 
                 foreach (var itemDto in txDto.Items)
@@ -74,9 +72,29 @@ public class SyncService : ISyncService
                         UnitPrice     = itemDto.UnitPrice
                     };
                     _context.TransactionItems.Add(item);
+
+                    var product = await _context.Products
+                        .FirstOrDefaultAsync(p => p.Id == itemDto.ProductId);
+
+                    if (product != null)
+                    {
+                        product.StockQuantity -= itemDto.Quantity;
+                        if (product.StockQuantity < 0)
+                            product.StockQuantity = 0;
+
+                        var movement = new InventoryMovement
+                        {
+                            Id          = Guid.NewGuid(),
+                            ProductId   = product.Id,
+                            Type        = "SALE",
+                            Quantity    = -itemDto.Quantity,
+                            ReferenceId = transaction.Id,
+                            CreatedAt   = DateTime.UtcNow
+                        };
+                        _context.InventoryMovements.Add(movement);
+                    }
                 }
 
-                
                 await _context.SaveChangesAsync();
             }
 
