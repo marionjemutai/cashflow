@@ -21,7 +21,7 @@ builder.Services.AddScoped<ISyncService, SyncService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IInventoryService, InventoryService>();
 builder.Services.AddScoped<ILedgerService, LedgerService>();
-
+builder.Services.AddScoped<IDeviceService, DeviceService>();
 
 var jwtKey = builder.Configuration["Jwt:Key"]!;
 
