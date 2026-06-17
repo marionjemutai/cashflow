@@ -1,3 +1,4 @@
+using CashflowGateway.API.Dependencies;
 using CashflowGateway.Application;
 using CashflowGateway.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,18 +14,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection"),
         new MySqlServerVersion(new Version(8, 0, 46))
     ));
-builder.Services.AddScoped<IAppDbContext>(
-    provider => provider.GetRequiredService<AppDbContext>());
-
-
-builder.Services.AddScoped<ISyncService, SyncService>();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IInventoryService, InventoryService>();
-builder.Services.AddScoped<ILedgerService, LedgerService>();
-builder.Services.AddScoped<IDeviceService, DeviceService>();
-builder.Services.AddScoped<IStoreService, StoreService>();
-builder.Services.AddScoped<IReceiptService, ReceiptService>();
-
+builder.Services.AddAppDI();
 var jwtKey = builder.Configuration["Jwt:Key"]!;
 
 
