@@ -23,6 +23,7 @@ builder.Services.AddScoped<IInventoryService, InventoryService>();
 builder.Services.AddScoped<ILedgerService, LedgerService>();
 builder.Services.AddScoped<IDeviceService, DeviceService>();
 builder.Services.AddScoped<IStoreService, StoreService>();
+builder.Services.AddScoped<IReceiptService, ReceiptService>();
 
 var jwtKey = builder.Configuration["Jwt:Key"]!;
 
