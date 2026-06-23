@@ -8,12 +8,9 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        new MySqlServerVersion(new Version(8, 0, 46))
-    ));
+options.UseMySql(
+    builder.Configuration.GetConnectionString("DefaultConnection"),new MySqlServerVersion(new Version(8, 0, 46))));
 builder.Services.AddAppDI();
 var jwtKey = builder.Configuration["Jwt:Key"]!;
 

@@ -8,6 +8,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddAppDbContext(this IServiceCollection services)
     {
+
         services.AddScoped<IAppDbContext>(
             provider => provider.GetRequiredService<AppDbContext>());
 
